@@ -1,7 +1,6 @@
 async function loadPokemon() {
     const container = document.getElementById("pokemonList");
     
-    // Estilo del contenedor: 1 columna
     container.style.display = "grid";
     container.style.gridTemplateColumns = "1fr";
     container.style.gap = "15px";
@@ -17,14 +16,12 @@ async function loadPokemon() {
             let resDetail = await fetch(pokemon.url);
             let detail = await resDetail.json();
 
-            // Card completa
             let card = document.createElement("div");
             card.style.background = "white";
             card.style.borderRadius = "12px";
             card.style.overflow = "hidden";
             card.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
 
-            // Imagen con fondo blanco
             let imgContainer = document.createElement("div");
             imgContainer.style.background = "white";
             imgContainer.style.padding = "20px";
@@ -36,23 +33,39 @@ async function loadPokemon() {
             img.style.height = "auto";
             img.style.display = "block";
 
-            // Franja azul oscura de abajo
             let footer = document.createElement("div");
             footer.style.background = "#1e2a47";
             footer.style.padding = "15px";
             footer.style.textAlign = "center";
+            footer.style.color = "white";
 
             let name = document.createElement("p");
             name.textContent = detail.name.charAt(0).toUpperCase() + detail.name.slice(1);
             name.style.margin = "0";
             name.style.fontWeight = "bold";
             name.style.fontSize = "22px";
-            name.style.color = "white";
             name.style.textShadow = "1px 1px 2px rgba(0,0,0,0.5)";
+            name.style.cursor = "pointer"; // Para que se vea clickeable
 
-            // Armar la card
-            imgContainer.appendChild(img);
+            // Contenedor de datos oculto al inicio
+            let info = document.createElement("div");
+            info.style.display = "none"; // OCULTO
+            info.style.marginTop = "10px";
+            info.innerHTML = `
+                <p style="margin: 4px 0; font-size: 16px;">Altura: ${detail.height / 10} m</p>
+                <p style="margin: 4px 0; font-size: 16px;">Peso: ${detail.weight / 10} kg</p>
+                <p style="margin: 4px 0; font-size: 16px; text-transform: capitalize;">Tipo: ${detail.types[0].type.name}</p>
+            `;
+
+            // Cuando haces click en el nombre, muestra/oculta los datos
+            name.onclick = () => {
+                info.style.display = info.style.display === "none" ? "block" : "none";
+            };
+
             footer.appendChild(name);
+            footer.appendChild(info);
+
+            imgContainer.appendChild(img);
             card.appendChild(imgContainer);
             card.appendChild(footer);
             container.appendChild(card);
